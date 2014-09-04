@@ -95,7 +95,7 @@
 
         hit.addEventListener('click', doHit);
         stand.addEventListener('click', doStand);
-        restart.addEventListener('click', function() { location.reload() });
+        restart.addEventListener('click', doRestart);
 
         function log(text) {
             output.value += text;
@@ -203,6 +203,15 @@
             restart.disabled = false;
 
             restart.focus();
+        }
+
+        function doRestart() {
+            output.value     = '';
+            playerScore      = 0;
+            computerScore    = 0;
+            hit.disabled     = false;
+            restart.disabled = true;
+            hit.focus();
         }
     </script>
 </body>
