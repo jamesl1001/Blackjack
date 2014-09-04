@@ -100,6 +100,7 @@
         function log(text) {
             output.value += text;
             output.value += '\r\r';
+            output.scrollTop = output.scrollHeight;
         }
 
         function getCard() {
