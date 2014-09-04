@@ -36,6 +36,11 @@
             outline: 0;
         }
 
+        .score {
+            width: 33.33%;
+            float: left;
+        }
+
         button {
             width: 140px;
             height: 50px;
@@ -77,6 +82,10 @@
     <h1>Blackjack</h1>
     <p>By <a href="http://jalproductions.co.uk">JaL Productions</a></p>
 
+    <p class="score">Games Won: <span id="score-won">0</span></p>
+    <p class="score">Games Drawn: <span id="score-drew">0</span></p>
+    <p class="score">Games Lost: <span id="score-lost">0</span></p>
+
     <button id="hit" autofocus>HIT</button>
     <button id="stand" disabled>STAND</button>
     <button id="restart" disabled>RESTART</button>
@@ -86,12 +95,18 @@
     <textarea id="output" rows="30" readonly tabindex="-1"></textarea>
 
     <script>
+        var scoreWon      = document.getElementById('score-won');
+        var scoreDrew     = document.getElementById('score-drew');
+        var scoreLost     = document.getElementById('score-lost');
         var hit           = document.getElementById('hit');
         var stand         = document.getElementById('stand');
         var restart       = document.getElementById('restart');
         var output        = document.getElementById('output');
         var playerScore   = 0;
         var computerScore = 0;
+        var gamesWon      = 0;
+        var gamesDrew     = 0;
+        var gamesLost     = 0;
 
         hit.addEventListener('click', doHit);
         stand.addEventListener('click', doStand);
@@ -188,7 +203,7 @@
                 if(computerScore > 21 || playerScore > computerScore) {
                     end('win');
                 } else if(playerScore === computerScore) {
-                    end('draw');
+                    end('drew');
                 } else {
                     end('lose');
                 }
@@ -198,6 +213,21 @@
         function end(result) {
             log('------');
             log('You ' + result + '!');
+
+            switch(result) {
+                case 'win':
+                    gamesWon++;
+                    scoreWon.innerHTML = gamesWon;
+                    break;
+                case 'drew':
+                    gamesDrew++;
+                    scoreDrew.innerHTML = gamesDrew;
+                    break;
+                case 'lose':
+                    gamesLost++;
+                    scoreLost.innerHTML = gamesLost;
+                    break;
+            }
 
             hit.disabled     = true;
             stand.disabled   = true;
