@@ -1,0 +1,209 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Blackjack written in Javascript"/>
+    <meta name="author" content="James Alexander Lee"/>
+    <title>Blackjack</title>
+    <style>
+        body {
+            max-width: 446px;
+            margin: 10px;
+            color: #3E659B;
+            font-family: Helvetica, Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 40px;
+        }
+
+        p {
+            margin-bottom: 25px;
+        }
+
+        a {
+            color: #3E659B;
+            border-bottom: 1px solid #3E659B;
+            text-decoration: none;
+        }
+
+        a:hover,
+        a:focus {
+            color: #DB9736;
+            border-bottom: 1px solid #DB9736;
+            outline: 0;
+        }
+
+        button {
+            width: 140px;
+            height: 50px;
+            background: #D4E6FF;
+            border: 3px solid #3E659B;
+            border-radius: 25px;
+            color: #3E659B;
+            font-size: 20px;
+        }
+
+        button:hover,
+        button:focus {
+            border: 3px solid #DB9736;
+            outline: 0;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            border: 3px solid #3E659B;
+            opacity: .4;
+            cursor: default;
+        }
+
+        textarea {
+            width: 420px;
+            border: 3px solid #3E659B;
+            margin-top: 10px;
+            padding: 10px;
+            color: #3E659B;
+            font-size: 20px;
+        }
+
+        textarea:focus {
+            outline: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Blackjack</h1>
+    <p>By <a href="http://jalproductions.co.uk">JaL Productions</a></p>
+
+    <button id="hit" autofocus>HIT</button>
+    <button id="stand" disabled>STAND</button>
+    <button id="restart" disabled>RESTART</button>
+
+    <br>
+
+    <textarea id="output" rows="30" readonly tabindex="-1"></textarea>
+
+    <script>
+        var hit           = document.getElementById('hit');
+        var stand         = document.getElementById('stand');
+        var restart       = document.getElementById('restart');
+        var output        = document.getElementById('output');
+        var playerScore   = 0;
+        var computerScore = 0;
+
+        hit.addEventListener('click', doHit);
+        stand.addEventListener('click', doStand);
+        restart.addEventListener('click', function() { location.reload() });
+
+        function log(text) {
+            output.value += text;
+            output.value += '\r\r';
+        }
+
+        function getCard() {
+            return Math.floor(Math.random()*13) + 1;
+        }
+
+        function doHit() {
+            var value = getCard();
+            var card;
+
+            switch(value) {
+                case 1:
+                    (confirm('You drew an Ace. Yes = 11, Cancel = 1.') ? value = 11 : value = 1);
+                    card = 'A';
+                    break;
+                case 11:
+                    card  = 'J';
+                    value = 10;
+                    break;
+                case 12:
+                    card  = 'Q';
+                    value = 10;
+                    break;
+                case 13:
+                    card = 'K';
+                    value = 10;
+                    break;
+                default:
+                    card = value;
+                    break;
+            }
+
+            playerScore += value;
+
+            log('You drew: ' + card + '\r' + 'Your score is: ' + playerScore);
+
+            stand.disabled = false;
+
+            if(playerScore > 21) {
+                end('lose');
+            }
+        }
+
+        function doStand() {
+            log('------');
+
+            while(computerScore < playerScore) {
+                computerHit();
+            }
+            
+            computerStand();
+
+            function computerHit() {
+                var value = getCard();
+                var card;
+
+                switch(value) {
+                    case 1:
+                        (computerScore > 10 ? value = 1 : value = 11);
+                        card = 'A';
+                        break;
+                    case 11:
+                        card  = 'J';
+                        value = 10;
+                        break;
+                    case 12:
+                        card  = 'Q';
+                        value = 10;
+                        break;
+                    case 13:
+                        card = 'K';
+                        value = 10;
+                        break;
+                    default:
+                        card = value;
+                        break;
+                }
+
+                computerScore += value;
+
+                log('Computer drew: ' + card + '\r' + 'Computer\'s score is: ' + computerScore);
+            }
+
+            function computerStand() {
+                if(computerScore > 21 || playerScore > computerScore) {
+                    end('win');
+                } else if(playerScore === computerScore) {
+                    end('draw');
+                } else {
+                    end('lose');
+                }
+            }
+        }
+
+        function end(result) {
+            log('------');
+            log('You ' + result + '!');
+
+            hit.disabled     = true;
+            stand.disabled   = true;
+            restart.disabled = false;
+
+            restart.focus();
+        }
+    </script>
+</body>
+</html>
